@@ -1,54 +1,45 @@
-# main.py
+
 from bus import Bus
 from billete import comprar_interactivo, devolver_interactivo
 
-def pedir_entero(mensaje, minimo=None):
+def pedir_int(mensaje: str, minimo: int = None, maximo: int = 100) -> int:
     while True:
-        txt = input(mensaje).strip()
+        valor = input(mensaje).strip()
         try:
-            n = int(txt)
+            n = int(valor)
             if minimo is not None and n < minimo:
-                print("El valor debe ser como mínimo " + str(minimo) + ".")
+                print(f"El valor debe ser como mínimo {minimo}.")
+                continue
+            if maximo is not None and n > maximo:
+                print(f"El valor debe ser como máximo {maximo}.")
                 continue
             return n
         except ValueError:
             print("Entrada inválida. Introduzca un número entero.")
 
-def seleccionar_o_crear_bus(buses):
+def seleccionar_o_crear_bus(buses: dict) -> Bus:
     matricula = input("Introduce la matrícula del bus: ").strip()
     if matricula in buses:
-        print("Bus '" + matricula + "' seleccionado.")
+        print(f"Bus '{matricula}' seleccionado.")
         return buses[matricula]
-
-    # Crear nuevo bus con validación de máximo 100 plazas
-    while True:
-        plazas_max = pedir_entero("Plazas totales del nuevo bus (máx. 100): ", minimo=1)
-        if plazas_max > 100:
-            print("Un bus no puede tener más de 100 plazas.")
-        else:
-            break
-
+    plazas_max = pedir_int("Plazas totales del nuevo bus: ", minimo=1)
     nuevo = Bus(plazas_max, matricula)
     buses[matricula] = nuevo
-    print("Bus '" + matricula + "' creado con " + str(plazas_max) + " plazas.")
+    print(f"Bus '{matricula}' creado con {plazas_max} plazas.")
     return nuevo
 
-def mostrar_estado(bus):
+def mostrar_estado(bus: Bus):
     print("\n=== ESTADO DEL BUS ===")
-    print("Matrícula      : " + bus.matricula)
-    print("Plazas totales : " + str(bus.plazas_max))
-    print("Plazas libres  : " + str(bus.get_plazas_libres()))
-    print("Plazas vendidas: " + str(bus.plazas_vendidas))
-    if bus.registro_clientes:
-        print("Clientes con billetes:")
-        for nombre, datos in bus.registro_clientes.items():
-            print("  - " + nombre + ": " + str(datos["cantidad"]) + " billete(s)")
-    else:
-        print("No hay clientes con billetes actualmente.")
+    print(f"Matrícula      : {bus.matricula}")
+    print(f"Plazas totales : {bus.plazas_max}")
+    print(f"Plazas libres  : {bus.plazas_libres}")
+    print(f"Plazas vendidas: {bus.plazas_vendidas}")
+
 
 def main():
-    buses = {}        # diccionario: matricula -> Bus
-    bus_actual = None
+
+    buses = {}
+    bus_actual = None 
 
     while True:
         print("\n--- MENÚ ---")
@@ -58,6 +49,7 @@ def main():
         print("4.- Consultar estado (del bus seleccionado)")
         print("5.- Consultar estado de otro bus por matrícula")
         print("0.- Salir")
+
         opcion = input("Elija una opción: ").strip()
 
         if opcion == "1":
@@ -92,7 +84,7 @@ def main():
             mat = input("Matrícula a consultar: ").strip()
             bus = buses.get(mat)
             if not bus:
-                print("No existe un bus con matrícula '" + mat + "'.")
+                print(f"No existe un bus con matrícula '{mat}'.")
             else:
                 mostrar_estado(bus)
 
