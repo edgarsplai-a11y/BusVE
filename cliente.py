@@ -1,11 +1,17 @@
-# cliente.py
-class Cliente:
-    def __init__(self, nombre, apellido):
-        self.nombre = nombre.strip()
-        self.apellido = apellido.strip()
+class bus:
+    def init(self, Plazas_max, Matricula):
+        self.Plazas_max = Plazas_max
+        self.Matricula = Matricula
 
-    def nombre_completo(self):
-        return (self.nombre + " " + self.apellido).strip()
+    def setPlazas_max(self, Plazas_max):
+        self.Plazas_max = Plazas_max
 
-    def __repr__(self):
-        return "Cliente(" + self.nombre_completo() + ")"
+    def getPlazas_max(self):
+        return self.Plazas_max
+
+    def setMatricula(self, Matricula):
+        self.Matricula = Matricula
+    def getMatricula(self):
+        return self.Matricula
+
+    

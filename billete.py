@@ -1,32 +1,53 @@
-# billete.py
-from bus import Bus
-from cliente import Cliente
+from bus import bus
 
-def _leer_entero(msg):
-    txt = input(msg).strip()
-    try:
-        return int(txt), None
-    except ValueError:
-        return None, "Entrada inválida. Debe introducir un número entero."
+plazas = int(input("Ingrese el número de asientos\n"))
+plazas_vendidas = 0
+plazas_max = int(plazas)
+valor_texto = 0
 
-def comprar_interactivo(bus):
-    nombre = input("Nombre del cliente: ").strip()
-    apellido = input("Apellido del cliente: ").strip()
-    if not nombre or not apellido:
-        return False, "Nombre y apellido son obligatorios."
-    cantidad, err = _leer_entero("¿Cuántos billetes desea comprar? ")
-    if err:
-        return False, err
-    cliente = Cliente(nombre, apellido)
-    return bus.vender_plazas(cantidad, cliente)
+vender = True
 
-def devolver_interactivo(bus):
-    nombre = input("Nombre del cliente: ").strip()
-    apellido = input("Apellido del cliente: ").strip()
-    if not nombre or not apellido:
-        return False, "Nombre y apellido son obligatorios."
-    cantidad, err = _leer_entero("¿Cuántos billetes desea devolver? ")
-    if err:
-        return False, err
-    cliente = Cliente(nombre, apellido)
-    return bus.devolver_plazas(cantidad, cliente)
+def venta_billete(plazas, plazas_vendidas):
+    tickets = int(input())
+    if tickets <= plazas:
+        plazas_vendidas += tickets
+        plazas -= plazas_vendidas
+    else:
+        print("Error")
+    return plazas, plazas_vendidas
+
+def devolucion(plazas, plazas_vendidas):
+    tickets = int(input())
+    if tickets <= plazas_vendidas:
+        plazas_vendidas -= tickets
+        plazas += tickets
+    else:
+       plazas=plazas 
+    return plazas, plazas_vendidas
+
+
+print("1.- Venta de billetes.")
+print("2.- Devolución de billetes.")
+print("3.- Estado de la venta.")
+print("0.- Salir.")
+
+while vender:
+    opcion = input()
+    if opcion == "1":
+        plazas, plazas_vendidas = venta_billete(plazas, plazas_vendidas)
+        print("Venta realizada")
+        print(f"Se vendieron: {plazas_vendidas}")
+    elif opcion == "2":
+        plazas, plazas_vendidas = devolucion(plazas, plazas_vendidas)
+        print("Devolución realizada")
+        print(f"Se devolvieron: {plazas}")
+    elif opcion == "3":
+        print("Estado de la venta")
+        print(f"Total: {plazas_max}")
+        print(f"Libre: {plazas}")
+        print(f"Vendido: {plazas_vendidas}")
+    elif opcion == "0":
+        vender = False
+
+
+    
