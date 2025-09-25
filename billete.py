@@ -1,29 +1,32 @@
 # billete.py
-# Módulo de ayuda para interacción por consola sobre un Bus
-
 from bus import Bus
 from cliente import Cliente
 
-def comprar_interactivo(bus: Bus):
+def _leer_entero(msg):
+    txt = input(msg).strip()
     try:
-        nombre = input("Nombre del cliente: ").strip()
-        apellido = input("Apellido del cliente: ").strip()
-        cantidad = int(input("¿Cuántos billetes desea comprar? ").strip())
+        return int(txt), None
     except ValueError:
-        return False, "Entrada inválida. Debe introducir un número entero en la cantidad."
+        return None, "Entrada inválida. Debe introducir un número entero."
 
+def comprar_interactivo(bus):
+    nombre = input("Nombre del cliente: ").strip()
+    apellido = input("Apellido del cliente: ").strip()
     if not nombre or not apellido:
         return False, "Nombre y apellido son obligatorios."
-
+    cantidad, err = _leer_entero("¿Cuántos billetes desea comprar? ")
+    if err:
+        return False, err
     cliente = Cliente(nombre, apellido)
-    ok, msg = bus.vender_plazas(cantidad, cliente)
-    return ok, msg
+    return bus.vender_plazas(cantidad, cliente)
 
-def devolver_interactivo(bus: Bus):
-    try:
-        cantidad = int(input("¿Cuántos billetes desea devolver? ").strip())
-    except ValueError:
-        return False, "Entrada inválida. Debe introducir un número entero en la cantidad."
-
-    ok, msg = bus.devolver_plazas(cantidad)
-    return ok, msg
+def devolver_interactivo(bus):
+    nombre = input("Nombre del cliente: ").strip()
+    apellido = input("Apellido del cliente: ").strip()
+    if not nombre or not apellido:
+        return False, "Nombre y apellido son obligatorios."
+    cantidad, err = _leer_entero("¿Cuántos billetes desea devolver? ")
+    if err:
+        return False, err
+    cliente = Cliente(nombre, apellido)
+    return bus.devolver_plazas(cantidad, cliente)

@@ -1,38 +1,47 @@
-# bus.py
-from typing import List, Dict, Any
+
 from cliente import Cliente
 
 class Bus:
-    def __init__(self, plazas_max: int, matricula: str):
+    def __init__(self, plazas_max, matricula):
+        if plazas_max < 1 or plazas_max > 100:
+            raise ValueError("El número de plazas debe estar entre 1 y 100.")
         self.plazas_max = plazas_max
         self.matricula = matricula
         self.plazas_vendidas = 0
-        # Historial simple de ventas y devoluciones
-        # ventas: lista de dicts {'cliente': Cliente, 'cantidad': int}
-        self.ventas: List[Dict[str, Any]] = []
-        # devoluciones: lista de dicts {'cantidad': int}
-        self.devoluciones: List[Dict[str, Any]] = []
+        self.registro_clientes = {}
 
-    @property
-    def plazas_libres(self) -> int:
+    def get_plazas_libres(self):
         return self.plazas_max - self.plazas_vendidas
 
-    def vender_plazas(self, cantidad: int, cliente: Cliente):
-        """Vende 'cantidad' de plazas a un cliente. Retorna (ok: bool, mensaje: str)."""
+    def vender_plazas(self, cantidad, cliente):
         if cantidad <= 0:
             return False, "La cantidad debe ser mayor que 0."
-        if cantidad > self.plazas_libres:
-            return False, f"No hay suficientes plazas. Libres: {self.plazas_libres}."
-        self.plazas_vendidas += cantidad
-        self.ventas.append({"cliente": cliente, "cantidad": cantidad})
-        return True, f"Venta realizada: {cantidad} billete(s) para {cliente.nombre_completo}."
+        libres = self.get_plazas_libres()
+        if cantidad > libres:
+            return False, "No hay suficientes plazas. Libres: " + str(libres) + "."
 
-    def devolver_plazas(self, cantidad: int):
-        """Devuelve 'cantidad' de plazas (no asociadas a un cliente concreto)."""
+        self.plazas_vendidas += cantidad
+        nombre = cliente.nombre_completo()
+        if nombre in self.registro_clientes:
+            self.registro_clientes[nombre]["cantidad"] += cantidad
+        else:
+            self.registro_clientes[nombre] = {"cliente": cliente, "cantidad": cantidad}
+
+        return True, "Venta realizada: " + str(cantidad) + " billete(s) para " + nombre + "."
+
+    def devolver_plazas(self, cantidad, cliente):
         if cantidad <= 0:
             return False, "La cantidad debe ser mayor que 0."
-        if cantidad > self.plazas_vendidas:
-            return False, f"No puedes devolver más de las vendidas ({self.plazas_vendidas})."
+        nombre = cliente.nombre_completo()
+        if nombre not in self.registro_clientes:
+            return False, nombre + " no tiene billetes comprados."
+        actuales = self.registro_clientes[nombre]["cantidad"]
+        if cantidad > actuales:
+            return False, nombre + " solo tiene " + str(actuales) + " billete(s)."
+
         self.plazas_vendidas -= cantidad
-        self.devoluciones.append({"cantidad": cantidad})
-        return True, f"Devolución realizada: {cantidad} billete(s)."
+        self.registro_clientes[nombre]["cantidad"] -= cantidad
+        if self.registro_clientes[nombre]["cantidad"] == 0:
+            del self.registro_clientes[nombre]
+
+        return True, "Devolución realizada: " + str(cantidad) + " billete(s) de " + nombre + "."
