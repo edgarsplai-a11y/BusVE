@@ -43,4 +43,4 @@ def devolver_interactivo(bus: Bus):
         return False, f"Cantidad inválida. Solo puede devolver entre 1 y {max_cant}."
 
     ok, msg = bus.devolver_plazas(cantidad, cliente)
-    return ok, msg 
+    return ok, msg
