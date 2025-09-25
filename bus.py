@@ -42,4 +42,4 @@ class Bus:
             del self.tickets_por_cliente[cliente]
 
         self.devoluciones.append({"cliente": cliente, "cantidad": cantidad})
-        return True, f"Devolución realizada: {cantidad} billete(s) de {cliente.nombre_completo}."
+        return True, f"Devolución realizada: {cantidad} billete(s) de {cliente.nombre_completo}." 

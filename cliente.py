@@ -8,4 +8,4 @@ class Cliente:
         return f"{self.nombre} {self.apellido}"
 
     def __repr__(self) -> str:
-        return f"Cliente({self.nombre_completo})"
+        return f"Cliente({self.nombre_completo})" 
